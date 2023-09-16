@@ -1,9 +1,12 @@
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth import authenticate, login, logout
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
 
+@method_decorator(csrf_protect, name="dispatch")
 class LoginView(APIView):
     def post(self, request, *args, **kwargs):
         email = request.data.get("email")
@@ -21,6 +24,7 @@ class LoginView(APIView):
         )
 
 
+@method_decorator(csrf_protect, name="dispatch")
 class LogoutView(APIView):
     def post(self, request, *args, **kwargs):
         if request.user.is_authenticated:

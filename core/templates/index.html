@@ -1,18 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
     <head>
-        <title></title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="css/style.css" rel="stylesheet">
+        <title>Index</title>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
     </head>
-    <title>Index</title>
     <body>
-
-        <div>
-            <h1>Initial</h1>
-            <h2>Hello here's my main page</h2>
-        </div>
-    
+        {% if not user.is_authenticated %}
+            {% include '__include_create_user_form.html' %}
+        {% endif %}
     </body>
 </html>

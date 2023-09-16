@@ -1,0 +1,46 @@
+<form
+    action="{% url 'createuser' %}"
+    id="create_user_form"
+    method="post"
+    enctype="application/json"
+>
+    {% csrf_token %}
+    <label for="email" id="create_user_email__label">
+        <span id="create_user_email__label__span">Email:</span>
+        <input
+            type="email"
+            name="email"
+            id="create_user_email"
+            placeholder="jose@email.com"
+            required
+        />
+    </label>
+    <label for="password" id="create_user_password__label">
+        <span id="create_user_password__label__span">Password:</span>
+        <input
+            type="text"
+            name="password"
+            id="create_user_password"
+            required
+        />
+    </label>
+    <label for="first_name" id="create_user_first_name__label">
+        <span id="create_user_first_name__label__span">First Name:</span>
+        <input
+            type="text"
+            name="first_name"
+            id="create_user_first_name"
+            required
+        />
+    </label>
+    <label for="last_name" id="create_user_last_name__label">
+        <span id="create_user_last_name__label__span">First Name:</span>
+        <input
+            type="text"
+            name="first_name"
+            id="create_user_last_name"
+            required
+        />
+    </label>
+    <button type="submit">Confirm</button>
+</form>
