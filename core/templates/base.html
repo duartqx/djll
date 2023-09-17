@@ -43,6 +43,9 @@
           enc: true,
         };
         for (const [field, value] of Object.entries(fields)) {
+          if (!value) {
+            return false;
+          }
           encrypted_values[field] = token.encode(value).toString();
         }
         htmx.ajax(
@@ -50,6 +53,7 @@
           "{% url 'login' %}",
           {target: "none", values: encrypted_values })
           .then(() => indexRequest());
+        return true;
       });
     };
     function logout() {

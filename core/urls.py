@@ -14,17 +14,17 @@ template_routes = [
     path("", TemplateView.as_view(template_name="index.html"), name="index"),
     path(
         "login/",
-        TemplateView.as_view(template_name="loginform.html"),
+        TemplateView.as_view(template_name="forms/login.html"),
         name="loginform",
     ),
     path(
         "user/create/",
-        TemplateView.as_view(template_name="createuserform.html"),
+        TemplateView.as_view(template_name="forms/createuser.html"),
         name="createuserform",
     ),
     path(
         "user/edit/",
-        TemplateView.as_view(template_name="edituserform.html"),
+        TemplateView.as_view(template_name="forms/edituser.html"),
         name="edituserform",
     ),
 ]

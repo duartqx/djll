@@ -28,5 +28,5 @@ class CreateUserSerializer(ModelSerializer):
         fields = ["email", "first_name", "last_name", "password"]
         required_fields = ["email", "first_name", "last_name", "password"]
         extra_kwargs = {
-            "password": {"write_only": True, "required": False},
+            "password": {"write_only": True},
         }
