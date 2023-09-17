@@ -12,9 +12,8 @@ class ChangePasswordSerializer(ModelSerializer):
 
     def validate(self, attrs):
         if attrs.get("enc"):
-            encryption_key = self.context["request"].session.get(
-                "encryption_key"
-            )
+            request = self.context["request"]
+            encryption_key = request.session.get("encryption_key")
             if not encryption_key:
                 raise ValidationError("Unauthorized")
             fernet = Fernet(encryption_key.encode())

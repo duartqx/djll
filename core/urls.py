@@ -7,7 +7,7 @@ from .views import (
     LoginView,
     LogoutView,
     UserView,
-    GetTokensView,
+    TokensView,
 )
 
 template_routes = [
@@ -19,13 +19,18 @@ template_routes = [
     ),
     path(
         "user/create/",
-        TemplateView.as_view(template_name="forms/createuser.html"),
-        name="createuserform",
+        TemplateView.as_view(template_name="forms/user_create.html"),
+        name="user_create_form",
     ),
     path(
         "user/edit/",
-        TemplateView.as_view(template_name="forms/edituser.html"),
-        name="edituserform",
+        TemplateView.as_view(template_name="forms/user_edit.html"),
+        name="user_edit_form",
+    ),
+    path(
+        "user/delete/",
+        TemplateView.as_view(template_name="forms/user_delete.html"),
+        name="user_delete_form",
     ),
 ]
 
@@ -55,7 +60,7 @@ api_routes = [
     ),
     path(
         "api/tokens/",
-        GetTokensView.as_view(),
+        TokensView.as_view(),
         name="tokens"
     )
 ]

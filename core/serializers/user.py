@@ -1,4 +1,7 @@
+from cryptography.fernet import Fernet
+from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer
+from rest_framework.fields import BooleanField
 
 from ..models import User
 
@@ -23,6 +26,9 @@ class SelfSerializer(ModelSerializer):
 
 
 class CreateUserSerializer(ModelSerializer):
+    def create(self, validated_data):
+        return self.Meta.model.objects.create_user(**validated_data)
+
     class Meta:
         model = User
         fields = ["email", "first_name", "last_name", "password"]

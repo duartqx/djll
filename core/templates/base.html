@@ -20,11 +20,15 @@
   ></script>
   <script>
     function indexRequest() {
+      // htmx.ajax automatically swap the html in 'target' with the HTTP response
       htmx.ajax("GET", "{% url 'index' %}", { target: "body" });
-    };
+    }
+    function indexRequestWithCallback(callback) {
+      htmx
+        .ajax("GET", "{% url 'index' %}", { target: "body" })
+        .then(() => callback());
+    }
     function getTokenThenCallback(callback) {
-      // Couldnt find how to return the json response using htmx.ajax, so I had
-      // to use fetch instead
       fetch("{% url 'tokens' %}")
         .then((res) => res.json())
         .then((res) => {
@@ -33,43 +37,63 @@
           if (callback) {
             callback(token, res.csrf);
           }
-          return token
+          return token;
         });
-    };
+    }
     function login(fields) {
       getTokenThenCallback((token, csrf) => {
-        encrypted_values = {
-          csrfmiddlewaretoken: csrf,
+        let encryptedValues = {
           enc: true,
         };
         for (const [field, value] of Object.entries(fields)) {
           if (!value) {
             return false;
           }
-          encrypted_values[field] = token.encode(value).toString();
+          encryptedValues[field] = token.encode(value).toString();
         }
-        htmx.ajax(
-          "POST",
-          "{% url 'login' %}",
-          {target: "none", values: encrypted_values })
-          .then(() => indexRequest());
+        fetch("{% url 'login' %}", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrf,
+          },
+          body: JSON.stringify(encryptedValues),
+        }).then(() => indexRequest());
         return true;
       });
-    };
+    }
     function logout() {
       getTokenThenCallback((token, csrf) => {
-        htmx.ajax(
-          "POST",
-          "{% url 'logout' %}",
-          {
-            target: "none",
-            values: {csrfmiddlewaretoken: csrf}
-          })
-          .then(() => indexRequest());
-      })
-    };
+        fetch("{% url 'logout' %}", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrf,
+          },
+          body: "{}",
+        }).then(() => indexRequest());
+      });
+    }
   </script>
+  <style>
+    #alertmessage {
+      opacity: 1;
+      transition: opacity 0.5s ease-in-out;
+    }
+
+    #alertmessage.hidden {
+      opacity: 0;
+    }
+  </style>
   <body>
-    {% include 'nav.html' %} {% block content %} {% endblock content%}
+    {% include 'nav.html' %}
+    <div
+      id="alertmessage"
+      class="alert alert-success col-md-10 mx-auto mt-3 hidden"
+      role="alert"
+    >
+      _
+    </div>
+    {% block content %} {% endblock content%}
   </body>
 </html>

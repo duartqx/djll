@@ -23,7 +23,7 @@
             <span id="login_password__label__span">Password:</span>
           </label>
           <input
-            type="text"
+            type="password"
             name="password"
             id="login_password"
             class="form-control"
@@ -45,7 +45,7 @@
           Confirm
         </button>
         <button
-          hx-get="{% url 'createuserform' %}"
+          hx-get="{% url 'user_create_form' %}"
           hx-target="#container"
           hx-swap="outerHTML"
           class="btn btn-outline-primary ms-auto"

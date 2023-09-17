@@ -1,13 +1,11 @@
-from base64 import urlsafe_b64encode
 from cryptography.fernet import Fernet
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth import authenticate, login, logout
 from django.middleware.csrf import get_token
-from django.utils.crypto import get_random_string
-from rest_framework.views import APIView
-from rest_framework.response import Response
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_protect
 from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 
 from ..serializers import LoginSerializer
@@ -64,7 +62,7 @@ class LogoutView(APIView):
 
 
 @method_decorator(csrf_protect, name="dispatch")
-class GetTokensView(APIView):
+class TokensView(APIView):
     def get(self, request, *args, **kwargs):
         csrf = get_token(request)
         if request.session.get("encryption_key") is not None:
@@ -75,9 +73,7 @@ class GetTokensView(APIView):
                 },
                 status=200
             )
-        encryption_key = urlsafe_b64encode(
-            get_random_string(32).encode()
-        ).decode()
+        encryption_key = Fernet.generate_key().decode()
         request.session["encryption_key"] = encryption_key
         return Response(
             {
