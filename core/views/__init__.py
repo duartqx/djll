@@ -1,2 +1,2 @@
-from .user_views import *
-from .login_views import *
+from .user import *
+from .auth import *

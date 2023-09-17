@@ -1,20 +1,44 @@
 from django.urls import path
 from django.views.generic import TemplateView
-from core.views.login_views import LogoutView
 
-from .views import ChangePasswordView, CreateUserView, LoginView, UserView
+from .views import (
+    ChangePasswordView,
+    CreateUserView,
+    LoginView,
+    LogoutView,
+    UserView,
+    GetTokensView,
+)
 
-urlpatterns = [
+template_routes = [
     path("", TemplateView.as_view(template_name="index.html"), name="index"),
-    path("login/", LoginView.as_view(), name="login"),
-    path("logout/", LogoutView.as_view(), name="logout"),
     path(
-        "password/",
+        "login/",
+        TemplateView.as_view(template_name="loginform.html"),
+        name="loginform",
+    ),
+    path(
+        "user/create/",
+        TemplateView.as_view(template_name="createuserform.html"),
+        name="createuserform",
+    ),
+    path(
+        "user/edit/",
+        TemplateView.as_view(template_name="edituserform.html"),
+        name="edituserform",
+    ),
+]
+
+api_routes = [
+    path("api/login/", LoginView.as_view(), name="login"),
+    path("api/logout/", LogoutView.as_view(), name="logout"),
+    path(
+        "api/password/",
         ChangePasswordView.as_view({"patch": "partial_update"}),
         name="password",
     ),
     path(
-        "user/",
+        "api/user/",
         UserView.as_view(
             {
                 "get": "retrieve",
@@ -25,8 +49,15 @@ urlpatterns = [
         name="user",
     ),
     path(
-        "createuser/",
+        "api/user/create/",
         CreateUserView.as_view({"post": "create"}),
         name="createuser",
     ),
+    path(
+        "api/tokens/",
+        GetTokensView.as_view(),
+        name="tokens"
+    )
 ]
+
+urlpatterns = template_routes + api_routes

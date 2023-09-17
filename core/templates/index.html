@@ -1,13 +1,13 @@
-<!doctype html>
-<html lang="en">
-    <head>
-        <title>Index</title>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-    </head>
-    <body>
-        {% if not user.is_authenticated %}
-            {% include '__include_create_user_form.html' %}
-        {% endif %}
-    </body>
-</html>
+{% extends 'base.html' %}
+{% block content %}
+  {% if not user.is_authenticated %}
+    {% include 'loginform.html' %}
+  {% else %}
+    <div id="container" class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+      <main class="px-3 text-center">
+        <h1>Welcome {{ user.first_name }}!</h1>
+        <p class="lead">You are logged in</p>
+      </main>
+    </div>
+  {% endif %}
+{% endblock content %}
