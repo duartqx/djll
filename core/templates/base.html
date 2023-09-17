@@ -36,7 +36,7 @@
           return token
         });
     };
-    function submitEncrypted(fields) {
+    function login(fields) {
       getTokenThenCallback((token, csrf) => {
         encrypted_values = {
           csrfmiddlewaretoken: csrf,
@@ -45,7 +45,6 @@
         for (const [field, value] of Object.entries(fields)) {
           encrypted_values[field] = token.encode(value).toString();
         }
-        console.log(encrypted_values);
         htmx.ajax(
           "POST",
           "{% url 'login' %}",
