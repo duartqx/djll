@@ -1,0 +1,105 @@
+<script>
+  function editUser() {
+    let userEmail = "";
+    let form = new FormData(htmx.find("#edituserform"));
+    encryptedValues = {
+      enc: true,
+    };
+    getTokenThenCallback((token, csrf) => {
+      for (const [field, value] of form.entries()) {
+        if (!value) {
+          return false;
+        }
+        if (field == "email") {
+          userEmail = value;
+        }
+        encryptedValues[field] = token.encode(value).toString();
+      }
+      fetch("{% url 'user' %}", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrf,
+        },
+        body: JSON.stringify(encryptedValues),
+      }).then(() => {
+        indexRequestWithCallback(() => {
+          setTimeout(() => {
+            let alertMessageEl = htmx.find("#alertmessage");
+            alertMessageEl.innerText = `${userEmail} was updated`;
+            alertMessageEl.classList.remove("hidden");
+            setTimeout(() => {
+              alertMessageEl.classList.add("hidden")
+            }, 3000);
+          }, 500)
+        });
+      });
+    });
+  }
+</script>
+<div id="container" class="container col-xl-10 col-xxl-8 px-4 py-5">
+  <div class="row align-items-center g-lg-5 py-5">
+    <div class="col-md-10 mx-auto col-lg-5">
+      <h1 class="text-center">Edit User Information</h1>
+      <form id="edituserform">
+        <div class="mb-3">
+          <label for="email" id="user_email__label" class="form-label">
+            <span id="user_email__label__span">Email:</span>
+          </label>
+          <input
+              type="email"
+              name="email"
+              id="user_email"
+              placeholder="jose@email.com"
+              class="form-control"
+              value="{{ user.email }}"
+              required
+              />
+        </div>
+        <div class="row mb-3">
+          <div class="col-6">
+            <label
+                for="first_name"
+                id="user_first_name__label"
+                class="form-label"
+                >
+                <span id="user_first_name__label__span">First Name:</span>
+            </label>
+            <input
+                type="text"
+                name="first_name"
+                id="user_first_name"
+                class="form-control"
+                value="{{ user.first_name }}"
+                required
+                />
+          </div>
+          <div class="col-6">
+            <label
+                for="last_name"
+                id="user_last_name__label"
+                class="form-label"
+                >
+                <span id="user_last_name__label__span">Last Name:</span>
+            </label>
+            <input
+                type="text"
+                name="last_name"
+                id="user_last_name"
+                class="form-control"
+                value="{{ user.last_name }}"
+                required
+                />
+          </div>
+        </div>
+      </form>
+      <button
+          type="submit"
+          class="btn btn-success col-12"
+          hx-on:click="editUser('#edituserform')"
+          >
+          Confirm
+      </button>
+    </div>
+  </div>
+</div>

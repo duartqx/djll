@@ -32,6 +32,11 @@ template_routes = [
         TemplateView.as_view(template_name="forms/user_delete.html"),
         name="user_delete_form",
     ),
+    path(
+        "user/password/",
+        TemplateView.as_view(template_name="forms/password_change.html"),
+        name="change_password_form",
+    ),
 ]
 
 api_routes = [

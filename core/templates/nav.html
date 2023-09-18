@@ -46,6 +46,26 @@
               >
             </li>
             <li>
+              <a
+                hx-get="{% url 'change_password_form' %}"
+                hx-target="#container"
+                hx-swap="outerHTML"
+                class="dropdown-item"
+                role="button"
+                >Change Password</a
+              >
+            </li>
+            <li>
+              <a
+                hx-get="{% url 'user_delete_form' %}"
+                hx-target="#container"
+                hx-swap="outerHTML"
+                class="dropdown-item"
+                role="button"
+                >Delete</a
+              >
+            </li>
+            <li>
               <a class="dropdown-item" hx-on:click="logout()" role="button"
                 >Logout</a
               >

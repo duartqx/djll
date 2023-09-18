@@ -1,0 +1,46 @@
+<div id="container" class="container col-xl-10 col-xxl-8 px-4 py-5">
+  <script>
+    function userDelete() {
+      getTokenThenCallback((token, csrf) => {
+        fetch("{% url 'user' %}", {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrf,
+          },
+          body: "{}",
+        }).then(() => {
+          indexRequestWithCallback(() => {
+            setTimeout(() => {
+              let alertMessageEl = htmx.find("#alertmessage");
+              alertMessageEl.innerText = `User with email ${userEmail} was deleted`;
+              alertMessageEl.classList.remove("hidden");
+              setTimeout(() => {
+                alertMessageEl.classList.add("hidden");
+              }, 3000);
+            }, 500);
+          });
+        });
+      });
+    }
+  </script>
+  <div class="row align-items-center g-lg-5 py-5">
+    <div class="col-md-10 mx-auto col-lg-5">
+      <h3 class="text-center">
+        Are you sure you want to delete your account?
+      </h3>
+      <div class="d-flex">
+        <button class="btn btn-danger col-5" hx-on:click="userDelete()">
+          Confirm
+        </button>
+        <button
+          hx-get="{% url 'index' %}"
+          hx-target="body"
+          class="btn btn-success col-5 offset-2"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

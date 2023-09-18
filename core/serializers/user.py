@@ -1,7 +1,4 @@
-from cryptography.fernet import Fernet
-from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer
-from rest_framework.fields import BooleanField
 
 from ..models import User
 
@@ -9,7 +6,16 @@ from ..models import User
 class SelfSerializer(ModelSerializer):
     class Meta:
         model = User
-        exclude = ["user_permissions", "groups"]
+        fields = [
+            "email",
+            "first_name",
+            "last_name",
+            "date_joined",
+            "is_active",
+            "is_staff",
+            "is_superuser",
+            "last_login",
+        ]
         read_only_fields = (
             "date_joined",
             "is_active",
@@ -18,7 +24,6 @@ class SelfSerializer(ModelSerializer):
             "last_login",
         )
         extra_kwargs = {
-            "password": {"write_only": True, "required": False},
             "email": {"required": False},
             "first_name": {"required": False},
             "last_name": {"required": False},
