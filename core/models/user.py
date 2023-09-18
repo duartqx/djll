@@ -48,8 +48,8 @@ class UserManager(DefaultUserManager):
         )
 
 
-# Create your models here.
 class User(AbstractUser):
+    """Authentication User with email as the username field"""
     # Sets the username to None so it's ignored
     username = None
     # Primary key as UUID for security reasons
