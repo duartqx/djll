@@ -1,29 +1,29 @@
-<div id="container" class="container col-xl-10 col-xxl-8 px-4 py-5">
-  <script>
-    function userDelete() {
-      getTokenThenCallback((token, csrf) => {
-        fetch("{% url 'user' %}", {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": csrf,
-          },
-          body: "{}",
-        }).then(() => {
-          indexRequestWithCallback(() => {
+<script>
+  function userDelete() {
+    getTokenThenCallback((token, csrf) => {
+      fetch("{% url 'user' %}", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrf,
+        },
+        body: "{}",
+      }).then(() => {
+        indexRequestWithCallback(() => {
+          setTimeout(() => {
+            let alertMessageEl = htmx.find("#alertmessage");
+            alertMessageEl.innerText = `User with email ${userEmail} was deleted`;
+            alertMessageEl.classList.remove("hidden");
             setTimeout(() => {
-              let alertMessageEl = htmx.find("#alertmessage");
-              alertMessageEl.innerText = `User with email ${userEmail} was deleted`;
-              alertMessageEl.classList.remove("hidden");
-              setTimeout(() => {
-                alertMessageEl.classList.add("hidden");
-              }, 3000);
-            }, 500);
-          });
+              alertMessageEl.classList.add("hidden");
+            }, 3000);
+          }, 500);
         });
       });
-    }
-  </script>
+    });
+  }
+</script>
+<div id="container" class="container col-xl-10 col-xxl-8 px-4 py-5">
   <div class="row align-items-center g-lg-5 py-5">
     <div class="col-md-10 mx-auto col-lg-5">
       <h3 class="text-center">
