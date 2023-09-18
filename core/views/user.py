@@ -69,16 +69,9 @@ class CreateUserView(mixins.CreateModelMixin, GenericViewSet):
 
     def create(self, request, *args, **kwargs):
         try:
-            serializer = self.get_serializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
+            return super().create(request, *args, **kwargs)
         except KeyError:
             return Response({"error": "Unauthorized"}, status=400)
-
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(
-            serializer.data, status=HTTP_201_CREATED, headers=headers
-        )
 
 
 @method_decorator(csrf_protect, name="dispatch")
