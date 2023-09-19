@@ -41,14 +41,14 @@
         });
     }
     function login({ email, password }) {
-      if ( !email || !password ) {
-        return false
+      if (!email || !password) {
+        return false;
       }
       getTokenThenCallback((token, csrf) => {
         let encryptedValues = {
           enc: true,
           email: token.encode(email).toString(),
-          password: token.encode(password).toString()
+          password: token.encode(password).toString(),
         };
 
         fetch("{% url 'login' %}", {
