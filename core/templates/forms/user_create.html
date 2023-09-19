@@ -1,21 +1,19 @@
 {% if user.is_authenticated %} {% include 'index.html' %} {% else %}
 <script>
-  function createUser() {
-    let userEmail = "";
-    let form = new FormData(htmx.find("#createuserform"));
-    encryptedValues = {
-      enc: true,
-    };
+  function createUser({ email, password, first_name, last_name }) {
+    if (!email || !password || !first_name || !last_name) {
+      return false;
+    }
     getTokenThenCallback((token, csrf) => {
-      for (const [field, value] of form.entries()) {
-        if (!value) {
-          return false;
-        }
-        if (field == "email") {
-          userEmail = value;
-        }
-        encryptedValues[field] = token.encode(value).toString();
-      }
+
+      let encryptedValues = {
+        enc: true,
+        email: token.encode(email).toString(),
+        password: token.encode(password).toString(),
+        first_name: token.encode(first_name).toString(),
+        last_name: token.encode(last_name).toString(),
+      };
+
       fetch("{% url 'createuser' %}", {
         method: "POST",
         headers: {
@@ -27,12 +25,12 @@
         indexRequestWithCallback(() => {
           setTimeout(() => {
             let alertMessageEl = htmx.find("#alertmessage");
-            alertMessageEl.innerText = `User sucessfully created for ${userEmail}`;
-            alertMessageEl.classList.remove("hidden");
+            alertMessageEl.innerText = `User sucessfully created for ${email}`;
+            htmx.toggleClass(alertMessageEl, "hidden");
             setTimeout(() => {
-              alertMessageEl.classList.add("hidden")
+              htmx.toggleClass(alertMessageEl, "hidden");
             }, 3000);
-          }, 500)
+          }, 500);
         });
       });
     });
@@ -114,7 +112,7 @@
         <button
           type="submit"
           class="btn btn-success"
-          hx-on:click="createUser();"
+          hx-on:click="createUser(htmx.values(htmx.find('#createuserform')));"
         >
           Confirm
         </button>

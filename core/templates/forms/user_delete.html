@@ -13,9 +13,9 @@
           setTimeout(() => {
             let alertMessageEl = htmx.find("#alertmessage");
             alertMessageEl.innerText = `User with email ${userEmail} was deleted`;
-            alertMessageEl.classList.remove("hidden");
+            htmx.toggleClass(alertMessageEl, "hidden")
             setTimeout(() => {
-              alertMessageEl.classList.add("hidden");
+              htmx.toggleClass(alertMessageEl, "hidden")
             }, 3000);
           }, 500);
         });

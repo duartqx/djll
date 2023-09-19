@@ -40,17 +40,17 @@
           return token;
         });
     }
-    function login(fields) {
+    function login({ email, password }) {
+      if ( !email || !password ) {
+        return false
+      }
       getTokenThenCallback((token, csrf) => {
         let encryptedValues = {
           enc: true,
+          email: token.encode(email).toString(),
+          password: token.encode(password).toString()
         };
-        for (const [field, value] of Object.entries(fields)) {
-          if (!value) {
-            return false;
-          }
-          encryptedValues[field] = token.encode(value).toString();
-        }
+
         fetch("{% url 'login' %}", {
           method: "POST",
           headers: {

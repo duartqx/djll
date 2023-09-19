@@ -2,7 +2,7 @@
 <div id="container" class="container col-xl-10 col-xxl-8 px-4 py-5">
   <div class="row align-items-center g-lg-5 py-5">
     <div class="col-md-10 mx-auto col-lg-5">
-      <form id="loginform">
+      <form id="loginform" hx-on:submit="login(htmx.values(this));">
         <div class="mb-3">
           <label for="email" id="login_email__label" class="form-label">
             <span id="login_email__label__span">Email:</span>
@@ -33,12 +33,7 @@
         <button
           type="button"
           class="btn btn-success"
-          hx-on:click="
-            login({
-              email: htmx.find('#login_email').value,
-              password: htmx.find('#login_password').value
-            });
-          "
+          hx-on:click="htmx.trigger('#loginform', 'submit');"
         >
           Confirm
         </button>
