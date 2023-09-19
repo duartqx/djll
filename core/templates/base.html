@@ -21,12 +21,15 @@
   <script>
     function indexRequest() {
       // htmx.ajax automatically swap the html in 'target' with the HTTP response
-      htmx.ajax("GET", "{% url 'index' %}", { target: "body" });
-    }
-    function indexRequestWithCallback(callback) {
       htmx
         .ajax("GET", "{% url 'index' %}", { target: "body" })
-        .then(() => callback());
+        .then(() => window.history.pushState(null, "", "/"));
+    }
+    function indexRequestWithCallback(callback) {
+      htmx.ajax("GET", "{% url 'index' %}", { target: "body" }).then(() => {
+        window.history.pushState(null, "", "/");
+        callback();
+      });
     }
     function getTokenThenCallback(callback) {
       fetch("{% url 'tokens' %}")

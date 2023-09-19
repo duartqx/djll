@@ -9,9 +9,16 @@ from .views import (
     UserView,
     TokensView,
 )
+from .views.htmx import (
+    IndexView,
+    UserDeleteHtmxView,
+    UserEditHtmxView,
+    UserCreateHtmxView,
+    PasswordChangeHtmxView,
+)
 
-template_routes = [
-    path("", TemplateView.as_view(template_name="index.html"), name="index"),
+htmx_routes = [
+    path("", IndexView.as_view(), name="index"),
     path(
         "login/",
         TemplateView.as_view(template_name="forms/login.html"),
@@ -19,22 +26,14 @@ template_routes = [
     ),
     path(
         "user/create/",
-        TemplateView.as_view(template_name="forms/user_create.html"),
+        UserCreateHtmxView.as_view(),
         name="user_create_form",
     ),
-    path(
-        "user/edit/",
-        TemplateView.as_view(template_name="forms/user_edit.html"),
-        name="user_edit_form",
-    ),
-    path(
-        "user/delete/",
-        TemplateView.as_view(template_name="forms/user_delete.html"),
-        name="user_delete_form",
-    ),
+    path("user/edit/", UserEditHtmxView.as_view(), name="user_edit_form"),
+    path("user/delete/", UserDeleteHtmxView.as_view(), name="user_delete_form"),
     path(
         "user/password/",
-        TemplateView.as_view(template_name="forms/password_change.html"),
+        PasswordChangeHtmxView.as_view(),
         name="change_password_form",
     ),
 ]
@@ -63,11 +62,7 @@ api_routes = [
         CreateUserView.as_view({"post": "create"}),
         name="createuser",
     ),
-    path(
-        "api/tokens/",
-        TokensView.as_view(),
-        name="tokens"
-    )
+    path("api/tokens/", TokensView.as_view(), name="tokens"),
 ]
 
-urlpatterns = template_routes + api_routes
+urlpatterns = htmx_routes + api_routes

@@ -39,6 +39,7 @@
               <a
                 hx-get="{% url 'user_edit_form' %}"
                 hx-target="#container"
+                hx-push-url="true"
                 hx-swap="outerHTML"
                 class="dropdown-item"
                 role="button"
@@ -48,6 +49,7 @@
             <li>
               <a
                 hx-get="{% url 'change_password_form' %}"
+                hx-push-url="true"
                 hx-target="#container"
                 hx-swap="outerHTML"
                 class="dropdown-item"
@@ -59,6 +61,7 @@
               <a
                 hx-get="{% url 'user_delete_form' %}"
                 hx-target="#container"
+                hx-push-url="true"
                 hx-swap="outerHTML"
                 class="dropdown-item"
                 role="button"

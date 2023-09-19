@@ -1,0 +1,132 @@
+{% if user.is_authenticated %} {% include 'index.html' %} {% else %}
+<script>
+  function createUser({ email, password, first_name, last_name }) {
+    if (!email || !password || !first_name || !last_name) {
+      return false;
+    }
+    getTokenThenCallback((token, csrf) => {
+
+      let encryptedValues = {
+        enc: true,
+        email: token.encode(email).toString(),
+        password: token.encode(password).toString(),
+        first_name: token.encode(first_name).toString(),
+        last_name: token.encode(last_name).toString(),
+      };
+
+      fetch("{% url 'createuser' %}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrf,
+        },
+        body: JSON.stringify(encryptedValues),
+      }).then(() => {
+        indexRequestWithCallback(() => {
+          setTimeout(() => {
+            let alertMessageEl = htmx.find("#alertmessage");
+            alertMessageEl.innerText = `User sucessfully created for ${email}`;
+            htmx.toggleClass(alertMessageEl, "hidden");
+            setTimeout(() => {
+              htmx.toggleClass(alertMessageEl, "hidden");
+            }, 3000);
+          }, 500);
+        });
+      });
+    });
+  }
+</script>
+<div id="container" class="container col-xl-10 col-xxl-8 px-4 py-5">
+  <div class="row align-items-center g-lg-5 py-5">
+    <div class="col-md-10 mx-auto col-lg-5">
+      <form
+        hx-post="{% url 'createuser' %}"
+        hx-target="none"
+        id="createuserform"
+      >
+        <div class="mb-3">
+          <label for="email" id="create_user_email__label" class="form-label">
+            <span id="create_user_email__label__span">Email:</span>
+          </label>
+          <input
+            type="email"
+            name="email"
+            id="create_user_email"
+            placeholder="jose@email.com"
+            class="form-control"
+            required
+          />
+        </div>
+        <div class="mb-3">
+          <label
+            for="password"
+            id="create_user_password__label"
+            class="form-label"
+          >
+            <span id="create_user_password__label__span">Password:</span>
+          </label>
+          <input
+            type="password"
+            name="password"
+            id="create_user_password"
+            class="form-control"
+            required
+          />
+        </div>
+        <div class="row mb-3">
+          <div class="col-6">
+            <label
+              for="first_name"
+              id="create_user_first_name__label"
+              class="form-label"
+            >
+              <span id="create_user_first_name__label__span">First Name:</span>
+            </label>
+            <input
+              type="text"
+              name="first_name"
+              id="create_user_first_name"
+              class="form-control"
+              required
+            />
+          </div>
+          <div class="col-6">
+            <label
+              for="last_name"
+              id="create_user_last_name__label"
+              class="form-label"
+            >
+              <span id="create_user_last_name__label__span">Last Name:</span>
+            </label>
+            <input
+              type="text"
+              name="last_name"
+              id="create_user_last_name"
+              class="form-control"
+              required
+            />
+          </div>
+        </div>
+      </form>
+      <div class="d-flex">
+        <button
+          type="submit"
+          class="btn btn-success"
+          hx-on:click="createUser(htmx.values(htmx.find('#createuserform')));"
+        >
+          Confirm
+        </button>
+        <button
+          hx-get="{% url 'loginform' %}"
+          hx-push-url="true"
+          hx-target="#container"
+          hx-swap="outerHTML"
+          class="btn btn-outline-primary ms-auto"
+        >
+          Login
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
