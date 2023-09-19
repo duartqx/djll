@@ -12,10 +12,10 @@
         indexRequestWithCallback(() => {
           setTimeout(() => {
             let alertMessageEl = htmx.find("#alertmessage");
-            alertMessageEl.innerText = `User with email ${userEmail} was deleted`;
-            htmx.toggleClass(alertMessageEl, "hidden")
+            alertMessageEl.innerText = `User with email {{ user.email }} was deleted`;
+            htmx.toggleClass(alertMessageEl, "hidden");
             setTimeout(() => {
-              htmx.toggleClass(alertMessageEl, "hidden")
+              htmx.toggleClass(alertMessageEl, "hidden");
             }, 3000);
           }, 500);
         });
