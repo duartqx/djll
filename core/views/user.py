@@ -104,15 +104,6 @@ class CreateUserView(mixins.CreateModelMixin, GenericViewSet):
         except KeyError:
             return Response({"error": "Unauthorized"}, status=400)
 
-    def htmx_create(self, request, *args, **kwargs):
-        try:
-            super().create(request, *args, **kwargs)
-            return HttpResponseRedirect(
-                f"{reverse('index')}?account_creation=1"
-            )
-        except KeyError:
-            return HttpResponseRedirect(f"{reverse('index')}?somethingwrong=1")
-
 
 @method_decorator(csrf_protect, name="dispatch")
 class ChangePasswordView(mixins.UpdateModelMixin, GenericViewSet):
