@@ -17,7 +17,6 @@ class UserManager(DefaultUserManager):
         password: str | None = None,
         **extra_fields,
     ) -> Type["User"]:
-
         if not email:
             raise ValueError("Email is required!")
         extra_fields.setdefault("is_staff", False)
