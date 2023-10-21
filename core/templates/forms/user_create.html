@@ -1,4 +1,107 @@
 {% extends 'base.html' %}
+{% load coretags %}
 {% block content %}
-{% include 'forms/partials/_partial_user_create.html' %}
+<div id="user_create">
+  <div id="container" class="container col-xl-10 col-xxl-8 px-4 py-5">
+
+    <div class="row align-items-center g-lg-5 py-5">
+      <div class="col-md-10 mx-auto col-lg-5">
+        <form
+          hx-post="{% url 'createuser_htmx' %}"
+          hx-ext="create-user-json-enc"
+          hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+          hx-push-url="/"
+          hx-target="body"
+          id="createuserform"
+        >
+          {% csrf_token %}
+          {% encryption_key %}
+
+          <div class="mb-3">
+            <label for="email" id="create_user_email__label" class="form-label">
+              <span id="create_user_email__label__span">Email:</span>
+            </label>
+            <input
+              type="email"
+              name="email"
+              id="create_user_email"
+              placeholder="jose@email.com"
+              class="form-control"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label
+              for="password"
+              id="create_user_password__label"
+              class="form-label"
+            >
+              <span id="create_user_password__label__span">Password:</span>
+            </label>
+            <input
+              type="password"
+              name="password"
+              id="create_user_password"
+              class="form-control"
+              required
+            />
+          </div>
+          <div class="row mb-3">
+            <div class="col-6">
+              <label
+                for="first_name"
+                id="create_user_first_name__label"
+                class="form-label"
+              >
+                <span id="create_user_first_name__label__span">First Name:</span>
+              </label>
+              <input
+                type="text"
+                name="first_name"
+                id="create_user_first_name"
+                class="form-control"
+                required
+              />
+            </div>
+            <div class="col-6">
+              <label
+                for="last_name"
+                id="create_user_last_name__label"
+                class="form-label"
+              >
+                <span id="create_user_last_name__label__span">Last Name:</span>
+              </label>
+              <input
+                type="text"
+                name="last_name"
+                id="create_user_last_name"
+                class="form-control"
+                required
+              />
+            </div>
+          </div>
+          <div class="d-flex">
+            <button
+                type="submit"
+                class="btn btn-success"
+                >
+                Confirm
+            </button>
+              <button
+                  type="button"
+                  hx-get="{% url 'loginform' %}"
+                  hx-select="#login"
+                  hx-push-url="true"
+                  hx-target="#container"
+                  hx-swap="outerHTML"
+                  class="btn btn-outline-primary ms-auto"
+                  >
+                  Login
+              </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock content %}
