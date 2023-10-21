@@ -1,0 +1,37 @@
+{% if request.GET.account_creation %}
+  <div
+    id="alertmessage"
+    class="alert alert-success col-md-10 mx-auto mt-3 hidden"
+    role="alert"
+  >
+    Your account was sucessfully created!
+  </div>
+{% elif request.GET.somethingwrong %}
+
+  <div
+    id="alertmessage"
+    class="alert alert-danger col-md-10 mx-auto mt-3 hidden"
+    role="alert"
+  >
+    Something went wrong!
+  </div>
+{% else %}
+  <div
+    id="alertmessage"
+    class="alert alert-success col-md-10 mx-auto mt-3 hidden"
+    role="alert"
+  >
+    _
+  </div>
+{% endif %}
+{% if request.GET.account_creation or request.GET.somethingwrong %}
+  <script>
+    setTimeout(() => {
+      let alertMessageEl = htmx.find("#alertmessage");
+      htmx.toggleClass(alertMessageEl, "hidden");
+      setTimeout(() => {
+        htmx.toggleClass(alertMessageEl, "hidden");
+      }, 5000);
+    }, 500);
+  </script>
+{% endif %}
