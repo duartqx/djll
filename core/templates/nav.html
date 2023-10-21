@@ -38,6 +38,7 @@
             <li>
               <a
                 hx-get="{% url 'user_edit_form' %}"
+                hx-select="#user_edit"
                 hx-target="#container"
                 hx-push-url="true"
                 hx-swap="outerHTML"
@@ -49,6 +50,7 @@
             <li>
               <a
                 hx-get="{% url 'change_password_form' %}"
+                hx-select="#password_change"
                 hx-push-url="true"
                 hx-target="#container"
                 hx-swap="outerHTML"
@@ -60,6 +62,7 @@
             <li>
               <a
                 hx-get="{% url 'user_delete_form' %}"
+                hx-select="#user_delete"
                 hx-target="#container"
                 hx-push-url="true"
                 hx-swap="outerHTML"
@@ -69,9 +72,9 @@
               >
             </li>
             <li>
-              <a class="dropdown-item" hx-on:click="logout()" role="button"
-                >Logout</a
-              >
+              <a class="dropdown-item" hx-on:click="logout()" role="button">
+                Logout
+              </a>
             </li>
           </ul>
           {% endif %}
