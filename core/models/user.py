@@ -1,3 +1,4 @@
+from typing import Type
 from django.db import models
 from django.contrib.auth.models import (
     AbstractUser,
@@ -15,21 +16,28 @@ class UserManager(DefaultUserManager):
         last_name: str,
         password: str | None = None,
         **extra_fields,
-    ):
+    ) -> Type["User"]:
+
         if not email:
-            raise ValueError("Email is required")
+            raise ValueError("Email is required!")
         extra_fields.setdefault("is_staff", False)
         extra_fields.setdefault("is_superuser", False)
 
         email = self.normalize_email(email)
+
+        if not email:
+            raise ValueError("Invalid Email!")
+
         user = self.model(
             email=email,
             first_name=first_name,
             last_name=last_name,
+            password=make_password(password),
             **extra_fields,
         )
-        user.password = make_password(password)
+
         user.save(using=self._db)
+
         return user
 
     def create_superuser(
