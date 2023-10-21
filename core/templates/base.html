@@ -1,3 +1,4 @@
+{% load static %}
 <!doctype html>
 <html lang="en">
   <head>
@@ -18,6 +19,8 @@
     integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
     crossorigin="anonymous"
   ></script>
+  <script src="{% static 'js/encoded-login-json-enc.js' %}"></script>
+  <script src="{% static 'js/create-user-json-enc.js' %}"></script>
   <script>
     function indexRequest() {
       // htmx.ajax automatically swap the html in 'target' with the HTTP response
@@ -43,28 +46,6 @@
           return token;
         });
     }
-    function login({ email, password }) {
-      if (!email || !password) {
-        return false;
-      }
-      getTokenThenCallback((token, csrf) => {
-        let encryptedValues = {
-          enc: true,
-          email: token.encode(email).toString(),
-          password: token.encode(password).toString(),
-        };
-
-        fetch("{% url 'login' %}", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": csrf,
-          },
-          body: JSON.stringify(encryptedValues),
-        }).then(() => indexRequest());
-        return true;
-      });
-    }
     function logout() {
       getTokenThenCallback((token, csrf) => {
         fetch("{% url 'logout' %}", {
@@ -73,7 +54,7 @@
             "Content-Type": "application/json",
             "X-CSRFToken": csrf,
           },
-          body: "{}",
+          body: JSON.stringify({csrfmiddlewaretoken: csrf}),
         }).then(() => indexRequest());
       });
     }
@@ -90,13 +71,7 @@
   </style>
   <body>
     {% include 'nav.html' %}
-    <div
-      id="alertmessage"
-      class="alert alert-success col-md-10 mx-auto mt-3 hidden"
-      role="alert"
-    >
-      _
-    </div>
+    {% include 'partials/alertmessage.html' %}
     {% block content %} {% endblock content%}
   </body>
 </html>
