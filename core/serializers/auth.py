@@ -1,7 +1,10 @@
 from cryptography.fernet import Fernet
+from django.contrib.auth import authenticate, login
 from rest_framework import fields
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer
+
+from core.service.enckeys import EncryptionService
 
 from ..models import User
 
@@ -49,6 +52,35 @@ class LoginSerializer(ModelSerializer):
     enc = fields.BooleanField(write_only=True, required=False)
     email = fields.CharField(write_only=True, required=True)
     password = fields.CharField(write_only=True, required=True)
+
+    def login(self) -> bool:
+        self.is_valid(raise_exception=True)
+
+        request = self.context["request"]
+
+        email = self.validated_data["email"]  # pyright: ignore
+        password = self.validated_data["password"]  # pyright: ignore
+        enc = self.validated_data.pop("enc", None)  # pyright: ignore
+
+        if enc:
+            enckey = request.session.get("encryption_key")
+
+            if not enckey:
+                return False
+
+            email, password = EncryptionService.decrypt_with_key(
+                enckey, email, password
+            )
+
+        user = authenticate(
+            request,
+            username=email,
+            password=password,
+        )
+        if user is not None:
+            login(request, user)
+            return True
+        return False
 
     class Meta:
         model = User
