@@ -1,9 +1,7 @@
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import logout
 from django.middleware.csrf import get_token
-from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
-from django.views.generic.base import HttpResponseRedirect
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -13,14 +11,18 @@ from ..service.enckeys import EncryptionService
 from ..serializers import LoginSerializer
 
 
-@method_decorator(csrf_protect, name="dispatch")
 class LoginView(GenericViewSet):
-    def login(self, request, *args, **kwargs):
-        serializer = LoginSerializer(
-            data=request.data, context={"request": request}
+    serializer_class = LoginSerializer
+
+    def get_serializer(self, *args, **kwargs):
+        return self.serializer_class(
+            data=self.request.data,
+            context={"request": self.request},  # pyright: ignore
         )
 
-        if serializer.login():
+    @method_decorator(csrf_protect)
+    def login(self, request, *args, **kwargs):
+        if self.get_serializer().login():
             return Response(
                 {"message": "Login successful"}, status=status.HTTP_200_OK
             )
@@ -29,16 +31,6 @@ class LoginView(GenericViewSet):
             {"message": "Invalid credentials"},
             status=status.HTTP_401_UNAUTHORIZED,
         )
-
-    def htmx_login(self, request, *args, **kwargs):
-        serializer = LoginSerializer(
-            data=request.data, context={"request": request}
-        )
-
-        if serializer.login():
-            return HttpResponseRedirect(reverse("index"))
-
-        return HttpResponseRedirect(f"{reverse('loginform')}?somethingwrong=1")
 
 
 @method_decorator(csrf_protect, name="dispatch")
