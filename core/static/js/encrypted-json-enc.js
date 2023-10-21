@@ -1,4 +1,4 @@
-htmx.defineExtension("encoded-login-json-enc", {
+htmx.defineExtension("encrypted-json-enc", {
   onEvent: function (name, evt) {
     if (name === "htmx:configRequest") {
       evt.detail.headers["Content-Type"] = "application/json";
@@ -8,15 +8,16 @@ htmx.defineExtension("encoded-login-json-enc", {
   encodeParameters: function (xhr, parameters, elt) {
     xhr.overrideMimeType("text/json");
 
-    const secret = new fernet.Secret(parameters.enckey);
+    let { enckey, ...unencryptedParameters } = parameters;
+
+    const secret = new fernet.Secret(enckey);
     const token = new fernet.Token({ secret: secret });
 
-    let encryptedValues = {
-      enc: true,
-      email: token.encode(parameters.email).toString(),
-      password: token.encode(parameters.password).toString(),
-      csrfmiddlewaretoken: parameters.csrfmiddlewaretoken,
-    };
+    let encryptedValues = { enc: true };
+
+    for (let [ key, value ] of Object.entries(unencryptedParameters)) {
+      encryptedValues[key] = token.encode(value).toString();
+    }
 
     return JSON.stringify(encryptedValues);
   },
