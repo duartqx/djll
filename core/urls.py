@@ -29,21 +29,24 @@ htmx_routes = [
     path(
         "user/edit/",
         TemplateView.as_view(template_name="forms/user_edit.html"),
-        name="user_edit_form"
+        name="user_edit_form",
     ),
     path(
         "user/delete/",
         TemplateView.as_view(template_name="forms/user_delete.html"),
-        name="user_delete_form"
+        name="user_delete_form",
     ),
     path(
         "user/password/",
         TemplateView.as_view(template_name="forms/password_change.html"),
         name="change_password_form",
     ),
-
     # Uses Serializer to post, but returns html response
-    path("api/login/htmx", LoginView.as_view({"post": "htmx_login"}), name="htmx_login"),
+    path(
+        "api/login/htmx",
+        LoginView.as_view({"post": "htmx_login"}),
+        name="htmx_login",
+    ),
     path(
         "user/create/htmx/",
         CreateUserView.as_view({"post": "htmx_create"}),

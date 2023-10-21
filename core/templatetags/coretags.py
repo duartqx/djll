@@ -5,9 +5,9 @@ from core.service.enckeys import EncryptionService
 
 register = template.Library()
 
+
 @register.simple_tag(takes_context=True)
 def encryption_key(context):
-
     session = context["request"].session
 
     encryption_key = EncryptionService.get_keys(session).get("enckey")

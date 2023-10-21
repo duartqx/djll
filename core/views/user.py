@@ -38,6 +38,7 @@ class UserView(
     """
     View for User GET, PATCH and DELETE HTTP requests
     """
+
     serializer_class = SelfSerializer
     permission_classes = [IsAuthenticated]
 
@@ -57,7 +58,7 @@ class UserView(
         return super().get_serializer(
             data=unencrypt_data(data, self.request.session["encryption_key"]),
             *args,
-            **kwargs
+            **kwargs,
         )
 
     def update(self, request, *args, **kwargs):
@@ -74,6 +75,7 @@ class UserView(
 @method_decorator(csrf_protect, name="dispatch")
 class CreateUserView(mixins.CreateModelMixin, GenericViewSet):
     """View for User POST"""
+
     serializer_class = CreateUserSerializer
 
     def get_serializer(self, *args, **kwargs):
@@ -89,7 +91,7 @@ class CreateUserView(mixins.CreateModelMixin, GenericViewSet):
         return super().get_serializer(
             data=unencrypt_data(data, self.request.session["encryption_key"]),
             *args,
-            **kwargs
+            **kwargs,
         )
 
     def create(self, request, *args, **kwargs):
@@ -103,21 +105,19 @@ class CreateUserView(mixins.CreateModelMixin, GenericViewSet):
             return Response({"error": "Unauthorized"}, status=400)
 
     def htmx_create(self, request, *args, **kwargs):
-
         try:
             super().create(request, *args, **kwargs)
             return HttpResponseRedirect(
                 f"{reverse('index')}?account_creation=1"
             )
         except KeyError:
-            return HttpResponseRedirect(
-                f"{reverse('index')}?somethingwrong=1"
-            )
+            return HttpResponseRedirect(f"{reverse('index')}?somethingwrong=1")
 
 
 @method_decorator(csrf_protect, name="dispatch")
 class ChangePasswordView(mixins.UpdateModelMixin, GenericViewSet):
     """View for password PATCH"""
+
     serializer_class = ChangePasswordSerializer
     permission_classes = [IsAuthenticated]
 
