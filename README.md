@@ -16,7 +16,7 @@ git clone https://github.com/duartqx/djll.git
 cd djll
 python -m venv .venv
 source .venv/bin/activate
-pip install -r requirements
+pip install -r requirements.txt
 python manage.py migrate
 python manage.py runserver
 ``` 
