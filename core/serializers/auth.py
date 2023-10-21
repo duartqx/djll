@@ -1,10 +1,9 @@
-from cryptography.fernet import Fernet
 from django.contrib.auth import authenticate, login
 from rest_framework import fields
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer
 
-from core.service.enckeys import EncryptionService
+from core.service.encryption import EncryptionService
 
 from ..models import User
 
@@ -30,8 +29,8 @@ class ChangePasswordSerializer(ModelSerializer):
             encryption_key = request.session.get("encryption_key")
             if not encryption_key:
                 raise ValidationError("Unauthorized")
-            fernet = Fernet(encryption_key.encode())
-            attrs["password"] = fernet.decrypt(attrs["password"]).decode()
+            enc_service = EncryptionService(request.session)
+            attrs["password"] = enc_service.decrypt(attrs["password"])
         return super().validate(attrs)
 
     def update(self, instance, validated_data):
@@ -70,9 +69,8 @@ class LoginSerializer(ModelSerializer):
             if not enckey:
                 return False
 
-            email, password = EncryptionService.decrypt_with_key(
-                enckey, email, password
-            )
+            enc_service = EncryptionService(request.session)
+            email, password = enc_service.decrypt_list(email, password)
 
         user = authenticate(
             request,

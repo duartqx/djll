@@ -5,6 +5,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 from django.views.generic import TemplateView
 from core.views.auth import LoginView
+from core.views.enums import AlertBootstrapClass, AlertMessage
 
 from ..views.user import CreateUserView
 
@@ -13,6 +14,7 @@ class GetMixin:
     template_name = ""
 
     def get(self, request, *args, **kwargs):
+        print(kwargs)
         if request.user.is_authenticated:
             return HttpResponseRedirect(reverse("index"))
         return render(request, self.template_name)
@@ -23,17 +25,6 @@ class IndexView(TemplateView):
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
-            if request.GET:
-                return HttpResponseRedirect(
-                    reverse("loginform")
-                    + "?"
-                    + "&".join(
-                        [
-                            f"{key}={value}"
-                            for key, value in request.GET.items()
-                        ]
-                    )
-                )
             return HttpResponseRedirect(reverse("loginform"))
         return super().dispatch(request, *args, **kwargs)
 
@@ -45,7 +36,13 @@ class LoginHtmxView(GetMixin, LoginView):
     def login(self, *args, **kwargs):
         if self.get_serializer().login():
             return HttpResponseRedirect(reverse("index"))
-        return HttpResponseRedirect(f"{reverse('loginform')}?somethingwrong=1")
+        return self.get(
+            self.request,
+            kwargs={
+                "alertmessage": AlertMessage.SOMETHING_WENT_WRONG,
+                "alertclass": AlertBootstrapClass.DANGER
+            }
+        )
 
 
 class CreateUserHtmxView(GetMixin, CreateUserView):

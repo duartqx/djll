@@ -1,31 +1,19 @@
-from cryptography.fernet import Fernet
 from django.contrib.auth import update_session_auth_hash
-from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
-from django.views.generic.base import HttpResponseRedirect
 from rest_framework import mixins
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from typing import Any, Dict
 
+from core.service.encryption import EncryptionService
+
 from ..serializers import (
     SelfSerializer,
     CreateUserSerializer,
     ChangePasswordSerializer,
 )
-
-
-def unencrypt_data(data, encryption_key) -> Dict[str, Any]:
-    """Decodes data using Fernet with the encryption_key passed as argument"""
-    if data.get("enc"):
-        unencrypted_data = {}
-        fernet = Fernet(encryption_key.encode())
-        for field, value in filter(lambda d: d[0] != "enc", data.items()):
-            unencrypted_data[field] = fernet.decrypt(value).decode()
-        return unencrypted_data
-    return data
 
 
 @method_decorator(csrf_protect, name="dispatch")
@@ -55,8 +43,9 @@ class UserView(
         data = kwargs.pop("data", {})
         # May raise KeyError exception on key access, this is handled on
         # the create method
+        enc_service = EncryptionService(self.request.session)
         return super().get_serializer(
-            data=unencrypt_data(data, self.request.session["encryption_key"]),
+            data=enc_service.decrypt_dict(data),
             *args,
             **kwargs,
         )

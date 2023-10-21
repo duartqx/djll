@@ -1,13 +1,13 @@
 from django import template
 from django.utils.safestring import mark_safe
 
-from core.service.enckeys import EncryptionService
+from core.service.encryption import EncryptionService
 
 register = template.Library()
 
 
 def get_key(session) -> str:
-    encryption_key = EncryptionService.get_keys(session).get("enckey", "")
+    encryption_key = EncryptionService(session).get_enckey()
 
     if session.get("encryption_key") is None:
         session["encryption_key"] = encryption_key
