@@ -9,10 +9,11 @@ class IndexView(TemplateView):
     def dispatch(self, request, *args, **kwargs):
         if not self.request.user.is_authenticated:
             if request.GET:
-                params = "?"
-                for key, value in request.GET.items():
-                    params += f"{key}={value}"
-                return HttpResponseRedirect(reverse("loginform") + params)
+                return HttpResponseRedirect(
+                    reverse("loginform")
+                    + "?"
+                    + "&".join([f"{key}={value}" for key, value in request.GET.items()])
+                )
             return HttpResponseRedirect(reverse("loginform"))
         return super().dispatch(request, *args, **kwargs)
 
