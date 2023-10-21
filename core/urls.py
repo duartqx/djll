@@ -12,18 +12,19 @@ from .views import (
 from .views.htmx import (
     IndexView,
     LoginHtmxView,
+    CreateUserHtmxView,
 )
 
 htmx_routes = [
     path("", IndexView.as_view(), name="index"),
     path(
         "login/",
-        LoginHtmxView.as_view(),
+        LoginHtmxView.as_view({"get": "get", "post": "login"}),
         name="loginform",
     ),
     path(
         "user/create/",
-        TemplateView.as_view(template_name="forms/user_create.html"),
+        CreateUserHtmxView.as_view({"get": "get", "post": "create"}),
         name="user_create_form",
     ),
     path(
@@ -40,17 +41,6 @@ htmx_routes = [
         "user/password/",
         TemplateView.as_view(template_name="forms/password_change.html"),
         name="change_password_form",
-    ),
-    # Uses Serializer to post, but returns html response
-    path(
-        "api/login/htmx",
-        LoginView.as_view({"post": "htmx_login"}),
-        name="htmx_login",
-    ),
-    path(
-        "user/create/htmx/",
-        CreateUserView.as_view({"post": "htmx_create"}),
-        name="createuser_htmx",
     ),
 ]
 
