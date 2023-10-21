@@ -77,8 +77,9 @@ class CreateUserView(mixins.CreateModelMixin, GenericViewSet):
         data = kwargs.pop("data", {})
         # May raise KeyError exception on key access, this is handled on
         # the create method
+        enc_service = EncryptionService(self.request.session)
         return super().get_serializer(
-            data=unencrypt_data(data, self.request.session["encryption_key"]),
+            data=enc_service.decrypt_dict(data),
             *args,
             **kwargs,
         )
