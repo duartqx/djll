@@ -21,7 +21,7 @@ class GetMixin:
         return render(
             request,
             self.template_name,
-            AlertMessage(request.session).decrypt_ctx(ctx) if ctx else {}
+            AlertMessage(request.session).decrypt_ctx(ctx) if ctx else {},
         )
 
 
@@ -38,7 +38,9 @@ class IndexView(TemplateView):
         context = self.get_context_data(**kwargs)
         if request.GET.get("ctx"):
             context.update(
-                AlertMessage(request.session).decrypt_ctx(request.GET.get("ctx"))
+                AlertMessage(request.session).decrypt_ctx(
+                    request.GET.get("ctx")
+                )
             )
         return self.render_to_response(context)
 

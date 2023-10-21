@@ -1,7 +1,7 @@
 from django import template
 from django.utils.safestring import mark_safe
 
-from core.service.encryption import EncryptionService
+from ..service.encryption import EncryptionService
 
 register = template.Library()
 

@@ -13,11 +13,18 @@ from ..serializers import LoginSerializer
 
 class LoginView(GenericViewSet):
     serializer_class = LoginSerializer
+    encryption_service = EncryptionService
+
+    def get_encryption_service(self):
+        return self.encryption_service(self.request.session)
 
     def get_serializer(self, *args, **kwargs):
         return self.serializer_class(
             data=self.request.data,  # pyright: ignore
-            context={"request": self.request},
+            context={
+                "request": self.request,
+                "encryption_service": self.get_encryption_service(),
+            },
         )
 
     @method_decorator(csrf_protect)
@@ -49,10 +56,16 @@ class LogoutView(APIView):
 
 @method_decorator(csrf_protect, name="dispatch")
 class TokensView(APIView):
+    encryption_service = EncryptionService
+
+    def get_encryption_service(self):
+        return self.encryption_service(
+            self.request.session,
+            get_token(self.request),
+        )
+
     def get(self, request, *args, **kwargs):
-        tokens = EncryptionService(
-            request.session, get_token(request)
-        ).get_tokens()
+        tokens = self.get_encryption_service().get_tokens()
 
         if request.session.get("encryption_key") is not None:
             return Response(tokens, status=200)

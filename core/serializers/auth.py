@@ -3,8 +3,7 @@ from rest_framework import fields
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer
 
-from core.service.encryption import EncryptionService
-
+from ..service.encryption import EncryptionService
 from ..models import User
 
 
@@ -25,11 +24,7 @@ class ChangePasswordSerializer(ModelSerializer):
             ValidationError
         """
         if attrs.get("enc"):
-            request = self.context["request"]
-            encryption_key = request.session.get("encryption_key")
-            if not encryption_key:
-                raise ValidationError("Unauthorized")
-            enc_service = EncryptionService(request.session)
+            enc_service = self.context["encryption_service"]
             attrs["password"] = enc_service.decrypt(attrs["password"])
         return super().validate(attrs)
 
@@ -58,6 +53,7 @@ class LoginSerializer(ModelSerializer):
         self.is_valid(raise_exception=True)
 
         request = self.context["request"]
+        enc_service = self.context["encryption_service"]
 
         email = self.validated_data["email"]  # pyright: ignore
         password = self.validated_data["password"]  # pyright: ignore
@@ -69,7 +65,6 @@ class LoginSerializer(ModelSerializer):
             if not enckey:
                 return False
 
-            enc_service = EncryptionService(request.session)
             email, password = enc_service.decrypt_list(email, password)
 
         user = authenticate(

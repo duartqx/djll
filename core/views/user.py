@@ -2,13 +2,12 @@ from django.contrib.auth import update_session_auth_hash
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 from rest_framework import mixins
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
-from typing import Any, Dict
 
-from core.service.encryption import EncryptionService
-
+from ..service.encryption import EncryptionService
 from ..serializers import (
     SelfSerializer,
     CreateUserSerializer,
@@ -29,6 +28,10 @@ class UserView(
 
     serializer_class = SelfSerializer
     permission_classes = [IsAuthenticated]
+    encryption_service = EncryptionService
+
+    def get_encryption_service(self):
+        return self.encryption_service(self.request.session)
 
     def get_object(self):
         return self.request.user
@@ -43,9 +46,8 @@ class UserView(
         data = kwargs.pop("data", {})
         # May raise KeyError exception on key access, this is handled on
         # the create method
-        enc_service = EncryptionService(self.request.session)
         return super().get_serializer(
-            data=enc_service.decrypt_dict(data),
+            data=self.get_encryption_service().decrypt_dict(data),
             *args,
             **kwargs,
         )
@@ -66,6 +68,10 @@ class CreateUserView(mixins.CreateModelMixin, GenericViewSet):
     """View for User POST"""
 
     serializer_class = CreateUserSerializer
+    encryption_service = EncryptionService
+
+    def get_encryption_service(self):
+        return self.encryption_service(self.request.session)
 
     def get_serializer(self, *args, **kwargs):
         """
@@ -77,9 +83,8 @@ class CreateUserView(mixins.CreateModelMixin, GenericViewSet):
         data = kwargs.pop("data", {})
         # May raise KeyError exception on key access, this is handled on
         # the create method
-        enc_service = EncryptionService(self.request.session)
         return super().get_serializer(
-            data=enc_service.decrypt_dict(data),
+            data=self.get_encryption_service().decrypt_dict(data),
             *args,
             **kwargs,
         )
@@ -101,6 +106,19 @@ class ChangePasswordView(mixins.UpdateModelMixin, GenericViewSet):
 
     serializer_class = ChangePasswordSerializer
     permission_classes = [IsAuthenticated]
+    encryption_service = EncryptionService
+
+    def get_encryption_service(self):
+        if not self.request.session.get("encryption_key"):
+            raise ValidationError("Unauthorized")
+        return self.encryption_service(
+            self.request.session, raise_exception=True
+        )
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context["encryption_service"] = self.get_encryption_service()
+        return context
 
     def get_object(self):
         return self.request.user

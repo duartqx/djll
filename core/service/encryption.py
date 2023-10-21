@@ -10,22 +10,38 @@ class NotSerializableError(TypeError):
     pass
 
 
+class MissingEncryptionKey(Exception):
+    pass
+
+
 class EncryptionService:
+    provider = Fernet
+
     def __init__(
         self,
         session: Union[Dict[str, Any], None] = None,
         csrf: Union[str, None] = None,
+        raise_exception: bool = False,
     ) -> None:
         if session is None:
             session = {}
+
+        self.raise_exception = raise_exception
         self.session = session
         self.csrf = csrf
-        self.fernet = Fernet(self.get_enckey().encode())
+        self.fernet = self.provider(self.get_enckey().encode())
+
+    def generate_key(self) -> str:
+        return self.provider.generate_key().decode()
 
     def get_enckey(self) -> str:
         if self.session.get("encryption_key") is not None:
             return self.session["encryption_key"]
-        self.session["encryption_key"] = Fernet.generate_key().decode()
+
+        if self.raise_exception:
+            raise MissingEncryptionKey()
+
+        self.session["encryption_key"] = self.generate_key()
         return self.session["encryption_key"]
 
     def get_tokens(self) -> Dict[str, str]:
