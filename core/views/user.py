@@ -1,7 +1,9 @@
 from cryptography.fernet import Fernet
 from django.contrib.auth import update_session_auth_hash
+from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
+from django.views.generic.base import HttpResponseRedirect
 from rest_framework import mixins
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -99,6 +101,18 @@ class CreateUserView(mixins.CreateModelMixin, GenericViewSet):
             return super().create(request, *args, **kwargs)
         except KeyError:
             return Response({"error": "Unauthorized"}, status=400)
+
+    def htmx_create(self, request, *args, **kwargs):
+
+        try:
+            super().create(request, *args, **kwargs)
+            return HttpResponseRedirect(
+                f"{reverse('index')}?account_creation=1"
+            )
+        except KeyError:
+            return HttpResponseRedirect(
+                f"{reverse('index')}?somethingwrong=1"
+            )
 
 
 @method_decorator(csrf_protect, name="dispatch")
