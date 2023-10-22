@@ -11,13 +11,16 @@ from ..views.auth import LoginView
 from ..views.user import ChangePasswordView, CreateUserView
 
 
-class GetMixin:
+class GetRedirecToIndexMixin:
     template_name = ""
 
     def get(self, request, *args, **kwargs):
+
         ctx = request.GET.get("ctx", "")
+
         if request.user.is_authenticated:
             return HttpResponseRedirect(f"{reverse('index')}?ctx={ctx}")
+
         return render(
             request,
             self.template_name,
@@ -32,7 +35,7 @@ class IndexView(TemplateView):
         if not request.user.is_authenticated:
             ctx = request.GET.get("ctx", "")
             return HttpResponseRedirect(reverse("login") + f"?ctx={ctx}")
-        return super().dispatch(request, *args, **kwargs)
+        return self.get(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
@@ -45,7 +48,7 @@ class IndexView(TemplateView):
         return self.render_to_response(context)
 
 
-class LoginHtmxView(GetMixin, LoginView):
+class LoginHtmxView(GetRedirecToIndexMixin, LoginView):
     template_name = "forms/login.html"
     alert_manager = AlertMessage
 
@@ -60,7 +63,7 @@ class LoginHtmxView(GetMixin, LoginView):
         return HttpResponseRedirect(f"{reverse('index')}?ctx={ctx}")
 
 
-class CreateUserHtmxView(GetMixin, CreateUserView):
+class CreateUserHtmxView(GetRedirecToIndexMixin, CreateUserView):
     template_name = "forms/user_create.html"
     alert_manager = AlertMessage
 
@@ -78,7 +81,7 @@ class CreateUserHtmxView(GetMixin, CreateUserView):
             return HttpResponseRedirect(f"{reverse('index')}?ctx={ctx}")
 
 
-class ChangePasswordHtmxView(GetMixin, ChangePasswordView):
+class ChangePasswordHtmxView(TemplateView, ChangePasswordView):
     template_name = "forms/password_change.html"
     alert_manager = AlertMessage
 
