@@ -40,7 +40,9 @@ htmx_routes = [
     ),
     path(
         "user/password/",
-        ChangePasswordHtmxView.as_view({"get": "get", "patch": "partial_update"}),
+        ChangePasswordHtmxView.as_view(
+            {"get": "get", "patch": "partial_update"}
+        ),
         name="change_password",
     ),
 ]

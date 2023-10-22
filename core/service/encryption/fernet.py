@@ -45,7 +45,6 @@ class FernetEncryptionService:
         return self.session["encryption_key"]
 
     def get_tokens(self) -> Dict[str, str]:
-
         encryption_key = self.get_enckey()
 
         if self.csrf is not None:
@@ -54,7 +53,6 @@ class FernetEncryptionService:
         return {"enckey": encryption_key}
 
     def decrypt_dict(self, data: Dict[str, Any]) -> Dict[str, Any]:
-
         if not data.get("enc"):
             return data
 
