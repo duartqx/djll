@@ -9,11 +9,16 @@ class AlertMessageStatus(StrEnum):
     ACCOUNT_SUCCESSFULLY_CREATED = "Your account was sucessfully created!"
     SUCCESSFULLY_CHANGED_PASSWORD = "Your password was successfully updated!"
     SUCCESSFULLY_UPDATED_USER = "Your informations were successfully updated!"
+    SUCCESSFULLY_DELETED_USER = "Your account was successfully deleted!"
+    LOGOUT = "You were logged out"
+    NOT_AUTHENTICATED = "You are not authenticated!"
 
 
 class AlertBootstrapClass(StrEnum):
     SUCCESS = "alert-success"
     DANGER = "alert-danger"
+    WARNING = "alert-warning"
+    INFO = "alert-info"
 
 
 class AlertMessage:
@@ -36,6 +41,30 @@ class AlertMessage:
             {
                 "alertmessage": AlertMessageStatus.SUCCESSFULLY_UPDATED_USER,
                 "alertclass": AlertBootstrapClass.SUCCESS,
+            }
+        )
+
+    def successfully_deleted_user(self) -> str:
+        return self.service.encrypt_json(
+            {
+                "alertmessage": AlertMessageStatus.SUCCESSFULLY_DELETED_USER,
+                "alertclass": AlertBootstrapClass.WARNING,
+            }
+        )
+
+    def you_are_not_authenticated(self) -> str:
+        return self.service.encrypt_json(
+            {
+                "alertmessage": AlertMessageStatus.NOT_AUTHENTICATED,
+                "alertclass": AlertBootstrapClass.WARNING,
+            }
+        )
+
+    def logout(self) -> str:
+        return self.service.encrypt_json(
+            {
+                "alertmessage": AlertMessageStatus.LOGOUT,
+                "alertclass": AlertBootstrapClass.INFO,
             }
         )
 
