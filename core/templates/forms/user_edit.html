@@ -1,44 +1,21 @@
 {% extends 'base.html' %}
+{% load coretags %}
 {% block content %}
 <div id="user_edit">
-  <script>
-    function editUser({ email, first_name, last_name }) {
-      getTokenThenCallback((token, csrf) => {
-
-        let encryptedValues = {
-          enc: true,
-          email: token.encode(email).toString(),
-          first_name: token.encode(first_name).toString(),
-          last_name: token.encode(last_name).toString(),
-        };
-
-        fetch("{% url 'api_user' %}", {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": csrf,
-          },
-          body: JSON.stringify(encryptedValues),
-        }).then(() => {
-          indexRequestWithCallback(() => {
-            setTimeout(() => {
-              let alertMessageEl = htmx.find("#alertmessage");
-              alertMessageEl.innerText = `${email} was updated`;
-              htmx.toggleClass(alertMessageEl, "hidden")
-              setTimeout(() => {
-                htmx.toggleClass(alertMessageEl, "hidden")
-              }, 3000);
-            }, 500)
-          });
-        });
-      });
-    }
-  </script>
   <div id="container" class="container col-xl-10 col-xxl-8 px-4 py-5">
     <div class="row align-items-center g-lg-5 py-5">
       <div class="col-md-10 mx-auto col-lg-5">
         <h1 class="text-center">Edit User Information</h1>
-        <form id="edituserform">
+        <form
+          id="edituserform"
+          hx-patch="{% url 'user_edit' %}"
+          hx-ext="encrypted-json-enc"
+          hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+          hx-target="body"
+        >
+
+          {% encryption_key %}
+
           <div class="mb-3">
             <label for="email" id="user_email__label" class="form-label">
               <span id="user_email__label__span">Email:</span>
@@ -89,14 +66,8 @@
                   />
             </div>
           </div>
+          <button type="submit" class="btn btn-success col-12">Confirm</button>
         </form>
-        <button
-            type="submit"
-            class="btn btn-success col-12"
-            hx-on:click="editUser(htmx.values(htmx.find('#edituserform')))"
-            >
-            Confirm
-        </button>
       </div>
     </div>
   </div>
