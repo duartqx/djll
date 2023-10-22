@@ -12,7 +12,7 @@
           last_name: token.encode(last_name).toString(),
         };
 
-        fetch("{% url 'user' %}", {
+        fetch("{% url 'api_user' %}", {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
