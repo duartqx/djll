@@ -20,44 +20,6 @@
     crossorigin="anonymous"
   ></script>
   <script src="{% static 'js/encrypted-json-enc.js' %}"></script>
-  <script>
-    function indexRequest() {
-      // htmx.ajax automatically swap the html in 'target' with the HTTP response
-      htmx
-        .ajax("GET", "{% url 'index' %}", { target: "body" })
-        .then(() => window.history.pushState(null, "", "/"));
-    }
-    function indexRequestWithCallback(callback) {
-      htmx.ajax("GET", "{% url 'index' %}", { target: "body" }).then(() => {
-        window.history.pushState(null, "", "/");
-        callback();
-      });
-    }
-    function getTokenThenCallback(callback) {
-      fetch("{% url 'api_tokens' %}")
-        .then((res) => res.json())
-        .then((res) => {
-          const secret = new fernet.Secret(res.enckey);
-          const token = new fernet.Token({ secret: secret });
-          if (callback) {
-            callback(token, res.csrf);
-          }
-          return token;
-        });
-    }
-    function logout() {
-      getTokenThenCallback((token, csrf) => {
-        fetch("{% url 'api_logout' %}", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": csrf,
-          },
-          body: JSON.stringify({csrfmiddlewaretoken: csrf}),
-        }).then(() => indexRequest());
-      });
-    }
-  </script>
   <style>
     #alertmessage {
       opacity: 1;
@@ -71,6 +33,6 @@
   <body>
     {% include 'nav.html' %}
     {% include 'partials/alertmessage.html' %}
-    {% block content %} {% endblock content%}
+    {% block content %} {% endblock content %}
   </body>
 </html>
