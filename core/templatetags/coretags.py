@@ -1,13 +1,13 @@
 from django import template
 from django.utils.safestring import mark_safe
 
-from ..service.encryption.fernet import FernetEncryptionSenvice
+from ..service.encryption.fernet import FernetEncryptionService
 
 register = template.Library()
 
 
 class EncryptionKeyTag:
-    service = FernetEncryptionSenvice
+    service = FernetEncryptionService
 
     @classmethod
     def get_key(cls, session) -> str:

@@ -1,7 +1,7 @@
 from enum import StrEnum
 from typing import Any, Dict
 
-from ..service.encryption.fernet import FernetEncryptionSenvice
+from ..service.encryption.fernet import FernetEncryptionService
 
 
 class AlertMessageStatus(StrEnum):
@@ -16,7 +16,7 @@ class AlertBootstrapClass(StrEnum):
 
 class AlertMessage:
 
-    provider = FernetEncryptionSenvice
+    provider = FernetEncryptionService
 
     def __init__(self, session: Dict[str, Any]) -> None:
         self.session = session

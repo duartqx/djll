@@ -7,13 +7,13 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 
-from ..service.encryption import EncryptionService
+from ..service.encryption.fernet import FernetEncryptionService
 from ..serializers import LoginSerializer
 
 
 class LoginView(GenericViewSet):
     serializer_class = LoginSerializer
-    encryption_service = EncryptionService
+    encryption_service = FernetEncryptionService
 
     def get_encryption_service(self):
         return self.encryption_service(self.request.session)
@@ -56,7 +56,7 @@ class LogoutView(APIView):
 
 @method_decorator(csrf_protect, name="dispatch")
 class TokensView(APIView):
-    encryption_service = EncryptionService
+    encryption_service = FernetEncryptionService
 
     def get_encryption_service(self):
         return self.encryption_service(
