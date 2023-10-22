@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+<div id="logoutform">
+  <div id="container" class="container col-xl-10 col-xxl-8 px-4 py-5">
+    <div class="row align-items-center g-lg-5 py-5">
+      <div class="col-md-10 mx-auto col-lg-5">
+        <h3 class="text-center">
+          Are you sure you want to logout?
+        </h3>
+        <div class="d-flex">
+          <button
+            type="button"
+            class="btn btn-danger col-5"
+            hx-delete="{% url 'logout' %}"
+            hx-ext="encrypted-json-enc"
+            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+            hx-target="body"
+          >
+            Confirm
+          </button>
+          <button
+              type="button"
+              class="btn btn-success col-5 offset-2"
+              hx-get="{% url 'index' %}"
+              hx-push-url="true"
+              hx-target="body"
+              >
+              Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
