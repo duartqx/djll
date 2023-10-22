@@ -14,7 +14,7 @@ class MissingEncryptionKey(Exception):
     pass
 
 
-class EncryptionService:
+class FernetEncryptionSenvice:
     provider = Fernet
 
     def __init__(
@@ -45,17 +45,24 @@ class EncryptionService:
         return self.session["encryption_key"]
 
     def get_tokens(self) -> Dict[str, str]:
+
         encryption_key = self.get_enckey()
+
         if self.csrf is not None:
             return {"csrf": self.csrf, "enckey": encryption_key}
+
         return {"enckey": encryption_key}
 
     def decrypt_dict(self, data: Dict[str, Any]) -> Dict[str, Any]:
+
         if not data.get("enc"):
             return data
+
         unencrypted_data = {}
+
         for field, value in filter(lambda d: d[0] != "enc", data.items()):
             unencrypted_data[field] = self.fernet.decrypt(value).decode()
+
         return unencrypted_data
 
     def decrypt(self, data: str) -> str:
