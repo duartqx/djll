@@ -3,7 +3,7 @@ from rest_framework import fields
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer
 
-from ..service.encryption import EncryptionService
+from ..service.encryption.fernet import FernetEncryptionService
 from ..models import User
 
 

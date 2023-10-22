@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from ..service.encryption.fernet import FernetEncryptionSenvice
+from ..service.encryption.fernet import FernetEncryptionService
 from ..serializers import (
     SelfSerializer,
     CreateUserSerializer,
@@ -28,7 +28,7 @@ class UserView(
 
     serializer_class = SelfSerializer
     permission_classes = [IsAuthenticated]
-    encryption_service = FernetEncryptionSenvice
+    encryption_service = FernetEncryptionService
 
     def get_encryption_service(self):
         return self.encryption_service(self.request.session)
@@ -68,7 +68,7 @@ class CreateUserView(mixins.CreateModelMixin, GenericViewSet):
     """View for User POST"""
 
     serializer_class = CreateUserSerializer
-    encryption_service = FernetEncryptionSenvice
+    encryption_service = FernetEncryptionService
 
     def get_encryption_service(self):
         return self.encryption_service(self.request.session)
@@ -106,7 +106,7 @@ class ChangePasswordView(mixins.UpdateModelMixin, GenericViewSet):
 
     serializer_class = ChangePasswordSerializer
     permission_classes = [IsAuthenticated]
-    encryption_service = FernetEncryptionSenvice
+    encryption_service = FernetEncryptionService
 
     def get_encryption_service(self):
         if not self.request.session.get("encryption_key"):

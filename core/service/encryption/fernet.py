@@ -14,7 +14,7 @@ class MissingEncryptionKey(Exception):
     pass
 
 
-class FernetEncryptionSenvice:
+class FernetEncryptionService:
     provider = Fernet
 
     def __init__(
