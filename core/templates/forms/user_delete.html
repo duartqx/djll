@@ -1,31 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
 <div id="user_delete">
-  <script>
-    function userDelete() {
-      getTokenThenCallback((token, csrf) => {
-        fetch("{% url 'api_user' %}", {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": csrf,
-          },
-          body: "{}",
-        }).then(() => {
-          indexRequestWithCallback(() => {
-            setTimeout(() => {
-              let alertMessageEl = htmx.find("#alertmessage");
-              alertMessageEl.innerText = `User with email {{ user.email }} was deleted`;
-              htmx.toggleClass(alertMessageEl, "hidden");
-              setTimeout(() => {
-                htmx.toggleClass(alertMessageEl, "hidden");
-              }, 3000);
-            }, 500);
-          });
-        });
-      });
-    }
-  </script>
   <div id="container" class="container col-xl-10 col-xxl-8 px-4 py-5">
     <div class="row align-items-center g-lg-5 py-5">
       <div class="col-md-10 mx-auto col-lg-5">
@@ -33,14 +8,22 @@
           Are you sure you want to delete your account?
         </h3>
         <div class="d-flex">
-          <button class="btn btn-danger col-5" hx-on:click="userDelete()">
+          <button
+            type="button"
+            class="btn btn-danger col-5"
+            hx-delete="{% url 'user_delete' %}"
+            hx-ext="encrypted-json-enc"
+            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+            hx-target="body"
+          >
             Confirm
           </button>
           <button
+              type="button"
+              class="btn btn-success col-5 offset-2"
               hx-get="{% url 'index' %}"
               hx-push-url="true"
               hx-target="body"
-              class="btn btn-success col-5 offset-2"
               >
               Cancel
           </button>
