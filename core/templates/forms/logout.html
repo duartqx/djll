@@ -14,7 +14,7 @@
             hx-delete="{% url 'logout' %}"
             hx-ext="encrypted-json-enc"
             hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-            hx-target="body"
+            hx-target="#container"
             hx-push-url="{% url 'login' %}"
           >
             Confirm
