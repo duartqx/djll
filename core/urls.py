@@ -1,5 +1,4 @@
 from django.urls import path
-from django.views.generic import TemplateView
 
 from .views import (
     ChangePasswordView,
@@ -9,11 +8,17 @@ from .views import (
     UserView,
     TokensView,
 )
-from .views.htmx import (
-    ChangePasswordHtmxView,
+from .views.htmx.index import (
     IndexView,
     LoginHtmxView,
+    LogoutHtmxView,
+)
+
+from .views.htmx.user import (
+    ChangePasswordHtmxView,
     CreateUserHtmxView,
+    DeleteUserHtmxView,
+    EditUserHtmxView,
 )
 
 htmx_routes = [
@@ -24,18 +29,25 @@ htmx_routes = [
         name="login",
     ),
     path(
+        "logout/",
+        LogoutHtmxView.as_view({"get": "get", "delete": "logout"}),
+        name="logout",
+    ),
+    path(
         "user/create/",
         CreateUserHtmxView.as_view({"get": "get", "post": "create"}),
         name="user_create",
     ),
     path(
         "user/edit/",
-        TemplateView.as_view(template_name="forms/user_edit.html"),
+        EditUserHtmxView.as_view(
+            {"get": "get", "patch": "partial_update"}
+        ),
         name="user_edit",
     ),
     path(
         "user/delete/",
-        TemplateView.as_view(template_name="forms/user_delete.html"),
+        DeleteUserHtmxView.as_view({"get": "get", "delete": "destroy"}),
         name="user_delete",
     ),
     path(
@@ -49,7 +61,7 @@ htmx_routes = [
 
 api_routes = [
     path("api/login/", LoginView.as_view({"post": "login"}), name="api_login"),
-    path("api/logout/", LogoutView.as_view(), name="api_logout"),
+    path("api/logout/", LogoutView.as_view({"post": "logout"}), name="api_logout"),
     path(
         "api/password/",
         ChangePasswordView.as_view({"patch": "partial_update"}),
