@@ -10,7 +10,7 @@
           hx-post="{% url 'user_create' %}"
           hx-ext="encrypted-json-enc"
           hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-          hx-push-url="/login/"
+          hx-push-url="{% url 'login' %}"
           hx-target="body"
           id="createuserform"
         >

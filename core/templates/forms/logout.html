@@ -15,6 +15,7 @@
             hx-ext="encrypted-json-enc"
             hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
             hx-target="body"
+            hx-push-url="{% url 'login' %}"
           >
             Confirm
           </button>

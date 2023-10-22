@@ -11,6 +11,7 @@
           hx-patch="{% url 'user_edit' %}"
           hx-ext="encrypted-json-enc"
           hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+          hx-push-url="{% url 'index' %}"
           hx-target="body"
         >
 

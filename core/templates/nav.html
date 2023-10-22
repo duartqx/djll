@@ -20,7 +20,9 @@
           <a
             class="nav-link active"
             role="button"
-            hx-on:click="indexRequest()"
+            hx-get="{% url 'index' %}"
+            hx-target="body"
+            hx-push-url="true"
           >
             Home
           </a>

@@ -9,7 +9,7 @@
             hx-post="{% url 'login' %}"
             hx-ext="encrypted-json-enc"
             hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-            hx-push-url="/"
+            hx-push-url="{% url 'index' %}"
             hx-target="body"
             >
 
