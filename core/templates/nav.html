@@ -72,7 +72,15 @@
               >
             </li>
             <li>
-              <a class="dropdown-item" hx-on:click="logout()" role="button">
+              <a
+                hx-get="{% url 'logout' %}"
+                hx-select="#logoutform"
+                hx-target="#container"
+                hx-push-url="true"
+                hx-swap="outerHTML"
+                class="dropdown-item"
+                role="button"
+              >
                 Logout
               </a>
             </li>
