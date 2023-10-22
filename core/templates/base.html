@@ -34,7 +34,7 @@
       });
     }
     function getTokenThenCallback(callback) {
-      fetch("{% url 'tokens' %}")
+      fetch("{% url 'api_tokens' %}")
         .then((res) => res.json())
         .then((res) => {
           const secret = new fernet.Secret(res.enckey);
@@ -47,7 +47,7 @@
     }
     function logout() {
       getTokenThenCallback((token, csrf) => {
-        fetch("{% url 'logout' %}", {
+        fetch("{% url 'api_logout' %}", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
