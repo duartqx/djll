@@ -7,6 +7,7 @@ from core.views.user import ChangePasswordView, CreateUserView, UserView
 
 from .index import GetRedirecToIndexMixin
 
+
 class CreateUserHtmxView(GetRedirecToIndexMixin, CreateUserView):
     template_name = "forms/user_create.html"
     service = RedirectWithCtxService

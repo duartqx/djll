@@ -86,4 +86,3 @@ class LogoutHtmxView(LogoutView, TemplateView):
 
         ctx = self.get_alert_manager().logout()
         return HttpResponseRedirect(f"{reverse('index')}?ctx={ctx}")
-

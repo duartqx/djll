@@ -40,9 +40,7 @@ htmx_routes = [
     ),
     path(
         "user/edit/",
-        EditUserHtmxView.as_view(
-            {"get": "get", "patch": "partial_update"}
-        ),
+        EditUserHtmxView.as_view({"get": "get", "patch": "partial_update"}),
         name="user_edit",
     ),
     path(
@@ -61,7 +59,11 @@ htmx_routes = [
 
 api_routes = [
     path("api/login/", LoginView.as_view({"post": "login"}), name="api_login"),
-    path("api/logout/", LogoutView.as_view({"post": "logout"}), name="api_logout"),
+    path(
+        "api/logout/",
+        LogoutView.as_view({"post": "logout"}),
+        name="api_logout",
+    ),
     path(
         "api/password/",
         ChangePasswordView.as_view({"patch": "partial_update"}),
