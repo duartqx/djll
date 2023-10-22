@@ -8,7 +8,7 @@ from rest_framework.exceptions import ValidationError
 
 from ..views.alertmessage import AlertMessage
 from ..views.auth import LoginView
-from ..views.user import CreateUserView
+from ..views.user import ChangePasswordView, CreateUserView
 
 
 class GetMixin:
@@ -31,7 +31,7 @@ class IndexView(TemplateView):
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             ctx = request.GET.get("ctx", "")
-            return HttpResponseRedirect(reverse("loginform") + f"?ctx={ctx}")
+            return HttpResponseRedirect(reverse("login") + f"?ctx={ctx}")
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
@@ -47,25 +47,50 @@ class IndexView(TemplateView):
 
 class LoginHtmxView(GetMixin, LoginView):
     template_name = "forms/login.html"
+    alert_manager = AlertMessage
+
+    def get_alert_manager(self):
+        return self.alert_manager(self.request.session)
 
     @method_decorator(csrf_protect)
     def login(self, *args, **kwargs):
         if self.get_serializer().login():
             return HttpResponseRedirect(reverse("index"))
-        ctx = AlertMessage(self.request.session).something_went_wrong()
+        ctx = self.get_alert_manager().something_went_wrong()
         return HttpResponseRedirect(f"{reverse('index')}?ctx={ctx}")
 
 
 class CreateUserHtmxView(GetMixin, CreateUserView):
     template_name = "forms/user_create.html"
+    alert_manager = AlertMessage
+
+    def get_alert_manager(self):
+        return self.alert_manager(self.request.session)
 
     @method_decorator(csrf_protect)
     def create(self, request, *args, **kwargs):
-        alert_msg = AlertMessage(request.session)
         try:
             super().create(request, *args, **kwargs)
-            ctx = alert_msg.successfully_created_account()
+            ctx = self.get_alert_manager().successfully_created_account()
             return HttpResponseRedirect(f"{reverse('index')}?ctx={ctx}")
         except (KeyError, ValidationError):
-            ctx = alert_msg.something_went_wrong()
+            ctx = self.get_alert_manager().something_went_wrong()
+            return HttpResponseRedirect(f"{reverse('index')}?ctx={ctx}")
+
+
+class ChangePasswordHtmxView(GetMixin, ChangePasswordView):
+    template_name = "forms/password_change.html"
+    alert_manager = AlertMessage
+
+    def get_alert_manager(self):
+        return self.alert_manager(self.request.session)
+
+    @method_decorator(csrf_protect)
+    def partial_update(self, request, *args, **kwargs):
+        try:
+            super().partial_update(request, *args, **kwargs)
+            ctx = self.get_alert_manager().successfully_changed_password()
+            return HttpResponseRedirect(f"{reverse('index')}?ctx={ctx}")
+        except ValidationError:
+            ctx = self.get_alert_manager().something_went_wrong()
             return HttpResponseRedirect(f"{reverse('index')}?ctx={ctx}")
