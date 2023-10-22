@@ -7,6 +7,7 @@ from ..service.encryption.fernet import FernetEncryptionService
 class AlertMessageStatus(StrEnum):
     SOMETHING_WENT_WRONG = "Something Went Wrong"
     ACCOUNT_SUCCESSFULLY_CREATED = "Your account was sucessfully created!"
+    SUCCESSFULLY_CHANGED_PASSWORD = "Your password was successfully updated!"
 
 
 class AlertBootstrapClass(StrEnum):
@@ -26,6 +27,14 @@ class AlertMessage:
         return self.service.encrypt_json(
             {
                 "alertmessage": AlertMessageStatus.ACCOUNT_SUCCESSFULLY_CREATED,
+                "alertclass": AlertBootstrapClass.SUCCESS,
+            }
+        )
+
+    def successfully_changed_password(self) -> str:
+        return self.service.encrypt_json(
+            {
+                "alertmessage": AlertMessageStatus.SUCCESSFULLY_CHANGED_PASSWORD,
                 "alertclass": AlertBootstrapClass.SUCCESS,
             }
         )
