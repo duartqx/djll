@@ -41,8 +41,8 @@ class LoginView(GenericViewSet):
 
 
 @method_decorator(csrf_protect, name="dispatch")
-class LogoutView(APIView):
-    def post(self, request, *args, **kwargs):
+class LogoutView(GenericViewSet):
+    def logout(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             logout(request)
             return Response(
