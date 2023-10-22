@@ -10,7 +10,7 @@ class AlertMessageStatus(StrEnum):
     SUCCESSFULLY_CHANGED_PASSWORD = "Your password was successfully updated!"
     SUCCESSFULLY_UPDATED_USER = "Your informations were successfully updated!"
     SUCCESSFULLY_DELETED_USER = "Your account was successfully deleted!"
-    LOGOUT = "You were logged out"
+    YOU_WERE_LOGGED_OUT = "You were logged out"
     NOT_AUTHENTICATED = "You are not authenticated!"
 
 
@@ -63,7 +63,7 @@ class AlertMessage:
     def logout(self) -> str:
         return self.service.encrypt_json(
             {
-                "alertmessage": AlertMessageStatus.LOGOUT,
+                "alertmessage": AlertMessageStatus.YOU_WERE_LOGGED_OUT,
                 "alertclass": AlertBootstrapClass.INFO,
             }
         )
