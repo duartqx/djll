@@ -37,7 +37,7 @@
           <ul class="dropdown-menu">
             <li>
               <a
-                hx-get="{% url 'user_edit_form' %}"
+                hx-get="{% url 'user_edit' %}"
                 hx-select="#user_edit"
                 hx-target="#container"
                 hx-push-url="true"
@@ -49,7 +49,7 @@
             </li>
             <li>
               <a
-                hx-get="{% url 'change_password_form' %}"
+                hx-get="{% url 'change_password' %}"
                 hx-select="#password_change"
                 hx-push-url="true"
                 hx-target="#container"
@@ -61,7 +61,7 @@
             </li>
             <li>
               <a
-                hx-get="{% url 'user_delete_form' %}"
+                hx-get="{% url 'user_delete' %}"
                 hx-select="#user_delete"
                 hx-target="#container"
                 hx-push-url="true"
