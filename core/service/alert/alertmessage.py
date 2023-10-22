@@ -1,13 +1,14 @@
 from enum import StrEnum
 from typing import Any, Dict
 
-from ..service.encryption.fernet import FernetEncryptionService
+from ..encryption.fernet import FernetEncryptionService
 
 
 class AlertMessageStatus(StrEnum):
     SOMETHING_WENT_WRONG = "Something Went Wrong"
     ACCOUNT_SUCCESSFULLY_CREATED = "Your account was sucessfully created!"
     SUCCESSFULLY_CHANGED_PASSWORD = "Your password was successfully updated!"
+    SUCCESSFULLY_UPDATED_USER = "Your informations were successfully updated!"
 
 
 class AlertBootstrapClass(StrEnum):
@@ -16,7 +17,6 @@ class AlertBootstrapClass(StrEnum):
 
 
 class AlertMessage:
-
     provider = FernetEncryptionService
 
     def __init__(self, session: Dict[str, Any]) -> None:
@@ -27,6 +27,14 @@ class AlertMessage:
         return self.service.encrypt_json(
             {
                 "alertmessage": AlertMessageStatus.ACCOUNT_SUCCESSFULLY_CREATED,
+                "alertclass": AlertBootstrapClass.SUCCESS,
+            }
+        )
+
+    def successfully_updated_user(self) -> str:
+        return self.service.encrypt_json(
+            {
+                "alertmessage": AlertMessageStatus.SUCCESSFULLY_UPDATED_USER,
                 "alertclass": AlertBootstrapClass.SUCCESS,
             }
         )
