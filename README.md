@@ -25,3 +25,8 @@ python manage.py runserver
 
 The templates have been restructured, and custom JavaScript functions previously handling JSON responses have been removed. Instead, I’ve added Django views which inherit from the api views and handle all Htmx requests, including receiving JSON data and responding with rendered HTML templates. This modification has led to a significant simplification of the templates, enabling Htmx to solely manage page interactivity. Upon examining the core/templates, you’ll notice that all components are simple HTML, with declarative Htmx tags
 
+## Demo
+
+https://github.com/duartqx/djll/assets/49421452/22c5e8e1-13a5-48da-af89-c3d755095c35
+
+
