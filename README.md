@@ -27,5 +27,8 @@ The templates have been restructured, and custom JavaScript functions previously
 
 ## Demo
 
+https://github.com/duartqx/djll/assets/49421452/262b66a7-3910-49f1-bb42-e4a1513d2dba
+
+
 
 
